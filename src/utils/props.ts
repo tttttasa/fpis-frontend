@@ -2,4 +2,8 @@ interface navbarProps {
     setPage: React.Dispatch<React.SetStateAction<number>>;
 }
 
-export { type navbarProps };
+interface dashboardProps {
+    page: number;
+}
+
+export { type navbarProps, type dashboardProps };

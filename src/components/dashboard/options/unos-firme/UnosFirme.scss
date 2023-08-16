@@ -1,0 +1,120 @@
+.UnosFirme {
+    .form {
+        .upper-part {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+
+            margin-bottom: 20px;
+
+            .drzava-input {
+                width: 200px;
+
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+
+                select {
+                    width: 120px;
+                    text-align: center;
+                }
+            }
+
+            .grad-input {
+                margin-top: 10px;
+
+                width: 200px;
+
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+
+                select {
+                    width: 120px;
+                    text-align: center;
+                }
+            }
+        }
+
+        .lower-part {
+            display: flex;
+            flex-direction: column;
+
+            .id-firme-input {
+                width: 320px;
+
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+
+                input {
+                    width: 180px;
+                    text-align: center;
+                }
+            }
+
+            .naziv-firme-input {
+                width: 320px;
+
+                margin-top: 10px;
+
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+
+                input {
+                    width: 180px;
+                    text-align: center;
+                }
+            }
+
+            .maticni-broj-input {
+                width: 320px;
+
+                margin-top: 10px;
+
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+
+                input {
+                    width: 180px;
+                    text-align: center;
+                }
+            }
+
+            .datum-osnivanja-input {
+                width: 320px;
+
+                margin-top: 10px;
+
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+
+                input {
+                    width: 180px;
+                    text-align: center;
+                }
+            }
+
+            button {
+                margin-left: auto;
+                margin-right: auto;
+
+                padding: 5px;
+
+                border-radius: 25px;
+
+                width: 120px;
+                margin-top: 25px;
+
+                &:hover {
+                    cursor: pointer;
+                    opacity: 0.6;
+                }
+            }
+        }
+    }
+}
