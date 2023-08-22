@@ -1,5 +1,123 @@
-.UnosFirme {
+.pregled-firmi {
+    .upper {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        width: 400px;
+
+        margin: 0px auto 20px auto;
+
+        font-family: "Roboto";
+
+        .left {
+            input {
+                width: 200px;
+
+                margin-top: 10px;
+
+                font-family: "Roboto";
+            }
+        }
+
+        .right {
+            .btn {
+                padding: 5px 15px;
+
+                border: solid 2px black;
+                border-radius: 20px;
+
+                font-family: "Roboto";
+
+                &:hover {
+                    cursor: pointer;
+                    opacity: 0.6;
+                }
+            }
+        }
+    }
+
+    .lower {
+        table {
+            thead {
+                tr {
+                    th {
+                        width: 120px;
+                        height: 20px;
+
+                        text-align: center;
+
+                        font-family: "Roboto";
+
+                        &:nth-child(4) {
+                            width: 160px;
+                        }
+
+                        &:last-child {
+                            width: 40px;
+                        }
+                    }
+                }
+            }
+
+            tbody {
+                tr {
+                    td {
+                        width: 120px;
+                        height: 20px;
+
+                        text-align: center;
+
+                        font-family: "Roboto";
+
+                        &:last-child {
+                            width: 40px;
+
+                            button {
+                                width: 80px;
+
+                                &:hover {
+                                    cursor: pointer;
+                                    opacity: 0.6;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+.izmena-firme {
     .form {
+        .close-row {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+
+            .btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                width: 25px;
+                height: 25px;
+                border-radius: 25px;
+
+                font-family: "Roboto";
+                background-color: rgb(169, 169, 169);
+                border: solid 2px black;
+
+                font-family: "Roboto";
+            }
+
+            &:hover {
+                cursor: pointer;
+                opacity: 0.6;
+            }
+        }
+
         .upper-part {
             display: flex;
             flex-direction: column;

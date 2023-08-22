@@ -8,6 +8,6 @@ $ yarn install
 
 ```bash
 # development
-$ yarn run start
+$ yarn dev
 
 ```

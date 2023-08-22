@@ -126,10 +126,10 @@ const UnosFirme = () => {
                     <button
                         onClick={async () => {
                             const firma: FirmaDto = {
-                                drzava: izabranaDrzava,
-                                grad: izabraniGrad,
-                                nazivFirme: imeFirme,
-                                maticniBroj: maticni,
+                                drzava: izabranaDrzava.toUpperCase(),
+                                grad: izabraniGrad.toUpperCase(),
+                                nazivFirme: imeFirme.toUpperCase(),
+                                maticniBroj: maticni.toUpperCase(),
                                 datumOsnivanja: new Date(date),
                             };
 
