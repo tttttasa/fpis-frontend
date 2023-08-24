@@ -1,14 +1,16 @@
-import { useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import axios from "axios";
 
-import "./UnosFirme.scss";
+import "./IzmenaFirme.scss";
 
 import { drzave, gradovi } from "../../../../utils/consts";
 import { FirmaDto } from "../../../../utils/dtos";
 
+import { izmenaFirmeProps } from "../../../../utils/props";
+
 import Notification from "../../../notifications/Notification";
 
-const UnosFirme = () => {
+const IzmenaFirme: FC<izmenaFirmeProps> = ({ firma, setIsChangeVisible }) => {
     const [izabranaDrzava, setIzabranaDrzava] = useState<string>("Srbija");
     const [izabraniGrad, setIzabraniGrad] = useState<string>("Beograd");
     const [moguciGradovi, setMoguciGradovi] = useState<string[]>([
@@ -25,7 +27,9 @@ const UnosFirme = () => {
 
     const [notification, setNotification] = useState<string>("");
 
-    const formatDate = (date: Date): string => {
+    const formatDate = (dateString: string): string => {
+        let date = new Date(dateString);
+
         let month: string = "";
 
         if (date.getMonth() + 1 / 10 === 1) {
@@ -41,24 +45,28 @@ const UnosFirme = () => {
         return imeFirme.length != 0 && maticni.length != 0 && date.length != 0;
     };
 
-    const resetInputs = () => {
-        setImeFirme("");
-        setMaticni("");
-        setDate(formatDate(new Date()));
-    };
-
     useEffect(() => {
-        const current = new Date();
-
-        let dateString = formatDate(current);
-
-        setDate(dateString);
+        setIzabranaDrzava(firma.drzava!);
+        setIzabraniGrad(firma.grad!);
+        setImeFirme(firma.nazivFirme!);
+        setMaticni(firma.maticniBroj!);
+        setDate(formatDate(firma.datumOsnivanja!.toString()));
     }, []);
 
     return (
-        <div className="UnosFirme">
+        <div className="izmena-firme">
             {notification.length === 0 && (
                 <div className="form">
+                    <div className="close-row">
+                        <div
+                            className="btn"
+                            onClick={() => {
+                                setIsChangeVisible(false);
+                            }}
+                        >
+                            X
+                        </div>
+                    </div>
                     <div className="upper-part">
                         <div className="drzava-input">
                             <p>Država:</p>
@@ -113,7 +121,11 @@ const UnosFirme = () => {
                     <div className="lower-part">
                         <div className="id-firme-input">
                             <p>ID firme:</p>
-                            <input type="text" disabled={true} />
+                            <input
+                                type="text"
+                                disabled={true}
+                                value={firma.idFirme}
+                            />
                         </div>
                         <div className="naziv-firme-input">
                             <p>Naziv firme:</p>
@@ -147,7 +159,8 @@ const UnosFirme = () => {
                         </div>
                         <button
                             onClick={async () => {
-                                const firma: FirmaDto = {
+                                const izmena: FirmaDto = {
+                                    idFirme: firma.idFirme,
                                     drzava: izabranaDrzava.toUpperCase(),
                                     grad: izabraniGrad.toUpperCase(),
                                     nazivFirme: imeFirme.toUpperCase(),
@@ -157,27 +170,28 @@ const UnosFirme = () => {
 
                                 if (!checkValues()) {
                                     setNotification(
-                                        "Molim Vas popunite sva data polja!"
+                                        "Molim Vas popunite sva ponudjena polja!"
                                     );
-                                } else {
-                                    try {
-                                        await axios.post(
-                                            "http://localhost:4500/firma",
-                                            firma
-                                        );
-                                        setNotification(
-                                            "Firma je uspešno sačuvan!"
-                                        );
-                                        resetInputs();
-                                    } catch (e) {
-                                        setNotification(
-                                            "Došlo je do greške pri čuvanju firme!"
-                                        );
-                                    }
+                                    return;
+                                }
+
+                                try {
+                                    await axios.put(
+                                        "http://localhost:4500/firma",
+                                        izmena
+                                    );
+                                    setNotification(
+                                        "Firma je uspešno sačuvana"
+                                    );
+                                } catch (e) {
+                                    setNotification(
+                                        "Došlo je do greške pri čuvanju izmena firme!"
+                                    );
+                                    return;
                                 }
                             }}
                         >
-                            Sačuvaj firmu
+                            Izmeni firmu
                         </button>
                     </div>
                 </div>
@@ -189,4 +203,4 @@ const UnosFirme = () => {
     );
 };
 
-export default UnosFirme;
+export default IzmenaFirme;

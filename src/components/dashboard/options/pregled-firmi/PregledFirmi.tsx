@@ -5,35 +5,19 @@ import "./PregledFirmi.scss";
 import { FirmaDto } from "../../../../utils/dtos";
 import axios from "axios";
 
-import { drzave, gradovi } from "../../../../utils/consts";
+import IzmenaFirme from "../izmena-firme/IzmenaFirme";
 
 const PregledFirmi = () => {
     const [naziv, setNaziv] = useState<string>("");
     const [visibleData, setVisibleData] = useState<FirmaDto[]>([]);
 
     const [isChangeVisible, setIsChangeVisible] = useState<boolean>(false);
-
-    const [moguciGradovi, setMoguciGradovi] = useState<string[]>([
-        "Beograd",
-        "Kragujevac",
-        "Kraljevo",
-        "Kruševac",
-        "Novi Sad",
-    ]);
-
-    const [idDrzave, setIdDrzave] = useState<number>(0);
-    const [izabranaDrzava, setIzabranaDrzava] = useState<string>("Srbija");
-    const [izabraniGrad, setIzabraniGrad] = useState<string>("Beograd");
-    const [idFirme, setIdFirme] = useState<number>(0);
-    const [imeFirme, setImeFirme] = useState<string>("");
-    const [maticni, setMaticni] = useState<string>("");
-    const [date, setDate] = useState<string>("");
+    const [changeFirma, setChangeFirma] = useState<FirmaDto>({});
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const response = await axios.get(`http://localhost:4500/firma`);
-                setVisibleData(response.data);
                 setVisibleData(response.data);
             } catch (e) {
                 setVisibleData([]);
@@ -41,7 +25,7 @@ const PregledFirmi = () => {
         };
 
         fetchData();
-    }, []);
+    }, [isChangeVisible]);
 
     const findMatches = async () => {
         const response = await axios.get(
@@ -49,26 +33,6 @@ const PregledFirmi = () => {
         );
 
         setVisibleData(response.data);
-    };
-
-    const setUpdateFirmaForm = (firma: FirmaDto) => {
-        setIdDrzave(firma.idFirme!);
-        setIzabranaDrzava(firma.drzava!);
-        setIzabraniGrad(firma.grad!);
-        setIdFirme(firma.idFirme!);
-        setImeFirme(firma.nazivFirme!);
-        setMaticni(firma.maticniBroj!);
-        setDate(formatDate(firma.datumOsnivanja!));
-
-        setMoguciGradovi(
-            gradovi
-                .filter(
-                    (grad) =>
-                        grad.drzava.toUpperCase() ===
-                        firma.drzava!.toUpperCase()
-                )
-                .map((element) => element.grad)
-        );
     };
 
     const formatDate = (date: Date): string => {
@@ -138,7 +102,7 @@ const PregledFirmi = () => {
                                     <td>
                                         <button
                                             onClick={() => {
-                                                setUpdateFirmaForm(
+                                                setChangeFirma(
                                                     visibleData[index]
                                                 );
                                                 setIsChangeVisible(true);
@@ -156,134 +120,10 @@ const PregledFirmi = () => {
             </div>
         </div>
     ) : (
-        <div className="izmena-firme">
-            <div className="form">
-                <div className="close-row">
-                    <div
-                        className="btn"
-                        onClick={() => {
-                            setIsChangeVisible(false);
-                        }}
-                    >
-                        X
-                    </div>
-                </div>
-                <div className="upper-part">
-                    <div className="drzava-input">
-                        <p>Država:</p>
-                        <select
-                            name="drzava-select"
-                            id="drzava-select"
-                            value={izabranaDrzava}
-                            onChange={(e) => {
-                                const izabrana = e.target.value.toUpperCase();
-                                setIzabranaDrzava(izabrana);
-                                setMoguciGradovi(
-                                    gradovi
-                                        .filter(
-                                            (grad) =>
-                                                grad.drzava.toUpperCase() ===
-                                                izabrana
-                                        )
-                                        .map((element) => element.grad)
-                                );
-                            }}
-                        >
-                            {drzave.map((drzava) => {
-                                return (
-                                    <option value={drzava.toUpperCase()}>
-                                        {drzava.toUpperCase()}
-                                    </option>
-                                );
-                            })}
-                        </select>
-                    </div>
-                    <div className="grad-input">
-                        <p>Grad:</p>
-                        <select
-                            name="drzava-select"
-                            id="drzava-select"
-                            value={izabraniGrad}
-                            onChange={(e) => {
-                                setIzabraniGrad(e.target.value);
-                            }}
-                        >
-                            {moguciGradovi.map((grad) => {
-                                return (
-                                    <option value={grad.toUpperCase()}>
-                                        {grad.toUpperCase()}
-                                    </option>
-                                );
-                            })}
-                        </select>
-                    </div>
-                </div>
-                <div className="lower-part">
-                    <div className="id-firme-input">
-                        <p>ID firme:</p>
-                        <input type="text" disabled={true} value={idFirme} />
-                    </div>
-                    <div className="naziv-firme-input">
-                        <p>Naziv firme:</p>
-                        <input
-                            type="text"
-                            value={imeFirme}
-                            onChange={(e) => {
-                                setImeFirme(e.target.value);
-                            }}
-                        />
-                    </div>
-                    <div className="maticni-broj-input">
-                        <p>Matični broj:</p>
-                        <input
-                            type="text"
-                            value={maticni}
-                            onChange={(e) => {
-                                setMaticni(e.target.value);
-                            }}
-                        />
-                    </div>
-                    <div className="datum-osnivanja-input">
-                        <p>Datum osnivanja:</p>
-                        <input
-                            type="date"
-                            value={date}
-                            onChange={(e) => {
-                                setDate(e.target.value);
-                            }}
-                        />
-                    </div>
-                    <button
-                        onClick={async () => {
-                            const firma: FirmaDto = {
-                                idFirme: idDrzave,
-                                drzava: izabranaDrzava.toUpperCase(),
-                                grad: izabraniGrad.toUpperCase(),
-                                nazivFirme: imeFirme.toUpperCase(),
-                                maticniBroj: maticni.toUpperCase(),
-                                datumOsnivanja: new Date(date),
-                            };
-
-                            try {
-                                await axios.put(
-                                    "http://localhost:4500/firma",
-                                    firma
-                                );
-                                const newData = await axios.get(
-                                    "http://localhost:4500/firma"
-                                );
-                                setVisibleData(newData.data);
-                                setIsChangeVisible(false);
-                            } catch (e) {
-                                console.log(e);
-                            }
-                        }}
-                    >
-                        Izmeni firmu
-                    </button>
-                </div>
-            </div>
-        </div>
+        <IzmenaFirme
+            firma={changeFirma}
+            setIsChangeVisible={setIsChangeVisible}
+        />
     );
 };
 
