@@ -21,11 +21,20 @@ interface SpisakGostijuDto {
 }
 
 interface AktivnostDto {
+    idAktivnost?: number;
     naziv?: string;
     termin?: Date;
 }
 
-interface StavkaPlanaDogadjajaDto {
+interface StavkaPlanaDogadjajaDataDto {
+    idPlanaDogadjaja?: number;
+    redniBrojStavke?: number;
+    brojSale?: number;
+    napomena?: string;
+    idAktivnosti?: number;
+}
+
+interface StavkaPlanaDogadjajaViewDto {
     idPlanaDogadjaja?: number;
     redniBrojStavke?: number;
     brojSale?: number;
@@ -41,7 +50,12 @@ interface PlanDogadjajaDto {
 
 interface PlanDogadjajaDataDto {
     planDogadjaja: PlanDogadjajaDto;
-    stavke: StavkaPlanaDogadjajaDto[];
+    stavke: StavkaPlanaDogadjajaDataDto[];
+}
+
+interface PlanDogadjajaViewDto {
+    planDogadjaja: PlanDogadjajaDto;
+    stavke: StavkaPlanaDogadjajaViewDto[];
 }
 
 export {
@@ -49,6 +63,8 @@ export {
     type PMDto,
     type SpisakGostijuDto,
     type AktivnostDto,
-    type StavkaPlanaDogadjajaDto,
+    type StavkaPlanaDogadjajaDataDto as StavkaPlanaDogadjajaDto,
+    type StavkaPlanaDogadjajaViewDto,
     type PlanDogadjajaDataDto,
+    type PlanDogadjajaViewDto,
 };

@@ -11,6 +11,7 @@ import {
     PlanDogadjajaDataDto,
     SpisakGostijuDto,
     StavkaPlanaDogadjajaDto,
+    StavkaPlanaDogadjajaViewDto,
 } from "../../../../utils/dtos";
 
 const UnosPlanaDogadjaja = () => {
@@ -36,6 +37,9 @@ const UnosPlanaDogadjaja = () => {
 
     // Stavke
     const [stavke, setStavke] = useState<StavkaPlanaDogadjajaDto[]>([]);
+    const [stavkeView, setStavkeView] = useState<StavkaPlanaDogadjajaViewDto[]>(
+        []
+    );
 
     useEffect(() => {
         getAktivnosti();
@@ -46,7 +50,6 @@ const UnosPlanaDogadjaja = () => {
             const response = await axios.get(`http://localhost:4500/aktivnost`);
 
             setAktivnosti(response.data);
-
             setIzabranaAktivnost(response.data[0]);
         } catch {
             setNotification(
@@ -139,12 +142,27 @@ const UnosPlanaDogadjaja = () => {
 
         const stavka: StavkaPlanaDogadjajaDto = {
             redniBrojStavke: stavke.length + 1,
-            aktivnost: izabranaAktivnost,
+            idAktivnosti: izabranaAktivnost.idAktivnost,
             brojSale: Number(brojSale),
             napomena: napomena,
         };
 
+        const stavkaView: StavkaPlanaDogadjajaViewDto = {
+            redniBrojStavke: stavka.redniBrojStavke,
+            brojSale: stavka.brojSale,
+            napomena: stavka.napomena,
+            aktivnost: izabranaAktivnost,
+        };
+
+        const temp = izabranaAktivnost;
+
+        console.log(temp);
+        console.log(aktivnosti);
+        console.log(stavka);
+        console.log(stavkaView);
+
         setStavke((stavke) => [...stavke, stavka]);
+        setStavkeView((stavke) => [...stavke, stavkaView]);
     };
 
     const savePlan = async () => {
@@ -163,7 +181,7 @@ const UnosPlanaDogadjaja = () => {
             return;
         }
 
-        const data: PlanDogadjajaDataDto = {
+        const planDogadjajaData: PlanDogadjajaDataDto = {
             planDogadjaja: {
                 idProjektnogMenadzera: PM.idProjektnogMenadzera,
                 idSpiska: spisak.idSpiska,
@@ -171,7 +189,20 @@ const UnosPlanaDogadjaja = () => {
             stavke: stavke,
         };
 
-        console.log(data);
+        console.log(stavke);
+
+        try {
+            await axios.post(
+                `http://localhost:4500/plan-dogadjaja`,
+                planDogadjajaData
+            );
+
+            setNotification("Plan događaja je uspešno sačuvan!");
+        } catch (e) {
+            setNotification("Došlo je do greške pri čuvanju plana događaja!");
+        }
+
+        resetForm();
     };
 
     const resetForm = () => {
@@ -189,6 +220,7 @@ const UnosPlanaDogadjaja = () => {
         setNapomena("");
 
         setStavke([]);
+        setStavkeView([]);
     };
 
     return notification.length === 0 ? (
@@ -327,7 +359,7 @@ const UnosPlanaDogadjaja = () => {
                     <div className="table-wrapper">
                         <table>
                             <tbody>
-                                {stavke.map((stavka) => {
+                                {stavkeView.map((stavka) => {
                                     return (
                                         <tr>
                                             <td>{stavka.redniBrojStavke}</td>
