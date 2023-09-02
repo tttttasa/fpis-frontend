@@ -1,12 +1,4 @@
-import { FirmaDto } from "./dtos";
-
-interface navbarProps {
-    setPage: React.Dispatch<React.SetStateAction<number>>;
-}
-
-interface dashboardProps {
-    page: number;
-}
+import { FirmaDto, PlanDogadjajaDataDto } from "./dtos";
 
 interface notificationProps {
     text: string;
@@ -18,9 +10,13 @@ interface izmenaFirmeProps {
     setIsChangeVisible: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
+interface izmenaPlanaDogadjaja {
+    planDogadjaja: PlanDogadjajaDataDto;
+    setIsChangeVisible: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
 export {
-    type navbarProps,
-    type dashboardProps,
     type notificationProps,
     type izmenaFirmeProps,
+    type izmenaPlanaDogadjaja,
 };

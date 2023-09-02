@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
+import axios from "axios";
 
 import "./PregledFirmi.scss";
 
 import { FirmaDto } from "../../../../utils/dtos";
-import axios from "axios";
 
 import IzmenaFirme from "../izmena-firme/IzmenaFirme";
 
@@ -40,7 +40,7 @@ const PregledFirmi = () => {
 
         let month: string = "";
 
-        if (date.getMonth() + 1 / 10 === 1) {
+        if ((date.getMonth() + 1) / 10 === 1) {
             month = (date.getMonth() + 1).toString();
         } else {
             month = `0${(date.getMonth() + 1).toString()}`;

@@ -11,15 +11,9 @@ import { izmenaFirmeProps } from "../../../../utils/props";
 import Notification from "../../../notifications/Notification";
 
 const IzmenaFirme: FC<izmenaFirmeProps> = ({ firma, setIsChangeVisible }) => {
-    const [izabranaDrzava, setIzabranaDrzava] = useState<string>("Srbija");
-    const [izabraniGrad, setIzabraniGrad] = useState<string>("Beograd");
-    const [moguciGradovi, setMoguciGradovi] = useState<string[]>([
-        "Beograd",
-        "Kragujevac",
-        "Kraljevo",
-        "Kruševac",
-        "Novi Sad",
-    ]);
+    const [izabranaDrzava, setIzabranaDrzava] = useState<string>("");
+    const [izabraniGrad, setIzabraniGrad] = useState<string>("");
+    const [moguciGradovi, setMoguciGradovi] = useState<string[]>([]);
 
     const [imeFirme, setImeFirme] = useState<string>("");
     const [maticni, setMaticni] = useState<string>("");
@@ -32,7 +26,7 @@ const IzmenaFirme: FC<izmenaFirmeProps> = ({ firma, setIsChangeVisible }) => {
 
         let month: string = "";
 
-        if (date.getMonth() + 1 / 10 === 1) {
+        if ((date.getMonth() + 1) / 10 === 1) {
             month = (date.getMonth() + 1).toString();
         } else {
             month = `0${(date.getMonth() + 1).toString()}`;
@@ -46,10 +40,19 @@ const IzmenaFirme: FC<izmenaFirmeProps> = ({ firma, setIsChangeVisible }) => {
     };
 
     useEffect(() => {
-        setIzabranaDrzava(firma.drzava!);
-        setIzabraniGrad(firma.grad!);
-        setImeFirme(firma.nazivFirme!);
-        setMaticni(firma.maticniBroj!);
+        setIzabranaDrzava(firma.drzava!.toUpperCase());
+        setIzabraniGrad(firma.grad!.toUpperCase());
+        setMoguciGradovi(
+            gradovi
+                .filter(
+                    (gradDrzava) =>
+                        gradDrzava.drzava.toUpperCase() ===
+                        firma.drzava?.toUpperCase()
+                )
+                .map((gradDrzava) => gradDrzava.grad.toUpperCase())
+        );
+        setImeFirme(firma.nazivFirme!.toUpperCase());
+        setMaticni(firma.maticniBroj!.toUpperCase());
         setDate(formatDate(firma.datumOsnivanja!.toString()));
     }, []);
 

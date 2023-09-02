@@ -1,44 +1,23 @@
-import { FC } from "react";
+import { Link } from "react-router-dom";
 
 import "./Navbar.scss";
-import { navbarProps } from "../../utils/props";
 
-const Navbar: FC<navbarProps> = ({ setPage }) => {
+const Navbar = () => {
     return (
         <div className="Navbar">
             <div className="container">
-                <div
-                    className="btn"
-                    onClick={() => {
-                        setPage(1);
-                    }}
-                >
-                    Unos nove firme
-                </div>
-                <div
-                    className="btn"
-                    onClick={() => {
-                        setPage(2);
-                    }}
-                >
+                <Link className="btn" to={"unos-firme"}>
+                    Unos firme
+                </Link>
+                <Link className="btn" to={"pregled-firmi"}>
                     Pregled firmi
-                </div>
-                <div
-                    className="btn"
-                    onClick={() => {
-                        setPage(3);
-                    }}
-                >
+                </Link>
+                <Link className="btn" to={"unos-plana-dogadjaja"}>
                     Unos plana dogadjaja
-                </div>
-                <div
-                    className="btn"
-                    onClick={() => {
-                        setPage(4);
-                    }}
-                >
+                </Link>
+                <Link className="btn" to={"pregled-planova-dogadjaja"}>
                     Pregled planova dogadjaja
-                </div>
+                </Link>
             </div>
         </div>
     );

@@ -7,7 +7,7 @@ interface FirmaDto {
     datumOsnivanja?: Date;
 }
 
-interface PMDto {
+interface ProjektniMenadzerDto {
     idProjektnogMenadzera?: number;
     imeProjektnogMenadzera?: string;
     prezimeProjektnogMenadzera?: string;
@@ -26,15 +26,7 @@ interface AktivnostDto {
     termin?: Date;
 }
 
-interface StavkaPlanaDogadjajaDataDto {
-    idPlanaDogadjaja?: number;
-    redniBrojStavke?: number;
-    brojSale?: number;
-    napomena?: string;
-    idAktivnosti?: number;
-}
-
-interface StavkaPlanaDogadjajaViewDto {
+interface StavkaPlanaDogadjajaDto {
     idPlanaDogadjaja?: number;
     redniBrojStavke?: number;
     brojSale?: number;
@@ -44,27 +36,20 @@ interface StavkaPlanaDogadjajaViewDto {
 
 interface PlanDogadjajaDto {
     idPlanaDogadjaja?: number;
-    idProjektnogMenadzera?: number;
-    idSpiska?: number;
+    projektniMenadzer?: ProjektniMenadzerDto;
+    spisak?: SpisakGostijuDto;
 }
 
 interface PlanDogadjajaDataDto {
     planDogadjaja: PlanDogadjajaDto;
-    stavke: StavkaPlanaDogadjajaDataDto[];
-}
-
-interface PlanDogadjajaViewDto {
-    planDogadjaja: PlanDogadjajaDto;
-    stavke: StavkaPlanaDogadjajaViewDto[];
+    stavke: StavkaPlanaDogadjajaDto[];
 }
 
 export {
     type FirmaDto,
-    type PMDto,
+    type ProjektniMenadzerDto as PMDto,
     type SpisakGostijuDto,
     type AktivnostDto,
-    type StavkaPlanaDogadjajaDataDto as StavkaPlanaDogadjajaDto,
-    type StavkaPlanaDogadjajaViewDto,
+    type StavkaPlanaDogadjajaDto,
     type PlanDogadjajaDataDto,
-    type PlanDogadjajaViewDto,
 };

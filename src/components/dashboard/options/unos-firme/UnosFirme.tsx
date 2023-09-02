@@ -47,6 +47,38 @@ const UnosFirme = () => {
         setDate(formatDate(new Date()));
     };
 
+    const izborGrada = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const izabrana = e.target.value.toUpperCase();
+        setIzabranaDrzava(izabrana);
+        setMoguciGradovi(
+            gradovi
+                .filter((grad) => grad.drzava.toUpperCase() === izabrana)
+                .map((element) => element.grad)
+        );
+    };
+
+    const saveFirma = async () => {
+        const firma: FirmaDto = {
+            drzava: izabranaDrzava.toUpperCase(),
+            grad: izabraniGrad.toUpperCase(),
+            nazivFirme: imeFirme.toUpperCase(),
+            maticniBroj: maticni.toUpperCase(),
+            datumOsnivanja: new Date(date),
+        };
+
+        if (!checkValues()) {
+            setNotification("Molim Vas popunite sva data polja!");
+        } else {
+            try {
+                await axios.post("http://localhost:4500/firma", firma);
+                setNotification("Firma je uspešno sačuvan!");
+                resetInputs();
+            } catch (e) {
+                setNotification("Došlo je do greške pri čuvanju firme!");
+            }
+        }
+    };
+
     useEffect(() => {
         const current = new Date();
 
@@ -67,18 +99,7 @@ const UnosFirme = () => {
                                 id="drzava-select"
                                 value={izabranaDrzava}
                                 onChange={(e) => {
-                                    const izabrana =
-                                        e.target.value.toUpperCase();
-                                    setIzabranaDrzava(izabrana);
-                                    setMoguciGradovi(
-                                        gradovi
-                                            .filter(
-                                                (grad) =>
-                                                    grad.drzava.toUpperCase() ===
-                                                    izabrana
-                                            )
-                                            .map((element) => element.grad)
-                                    );
+                                    izborGrada(e);
                                 }}
                             >
                                 {drzave.map((drzava) => {
@@ -147,34 +168,7 @@ const UnosFirme = () => {
                         </div>
                         <button
                             onClick={async () => {
-                                const firma: FirmaDto = {
-                                    drzava: izabranaDrzava.toUpperCase(),
-                                    grad: izabraniGrad.toUpperCase(),
-                                    nazivFirme: imeFirme.toUpperCase(),
-                                    maticniBroj: maticni.toUpperCase(),
-                                    datumOsnivanja: new Date(date),
-                                };
-
-                                if (!checkValues()) {
-                                    setNotification(
-                                        "Molim Vas popunite sva data polja!"
-                                    );
-                                } else {
-                                    try {
-                                        await axios.post(
-                                            "http://localhost:4500/firma",
-                                            firma
-                                        );
-                                        setNotification(
-                                            "Firma je uspešno sačuvan!"
-                                        );
-                                        resetInputs();
-                                    } catch (e) {
-                                        setNotification(
-                                            "Došlo je do greške pri čuvanju firme!"
-                                        );
-                                    }
-                                }
+                                await saveFirma();
                             }}
                         >
                             Sačuvaj firmu

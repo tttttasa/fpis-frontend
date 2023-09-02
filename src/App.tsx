@@ -1,18 +1,17 @@
-import { useState } from "react";
-
 import "./App.scss";
 
 import Navbar from "./components/navbar/Navbar";
 import Dashboard from "./components/dashboard/Dashboard";
+import { BrowserRouter } from "react-router-dom";
 
 const App = () => {
-    const [page, setPage] = useState<number>(1);
-
     return (
-        <div className="App">
-            <Navbar setPage={setPage} />
-            <Dashboard page={page} />
-        </div>
+        <BrowserRouter>
+            <div className="App">
+                <Navbar />
+                <Dashboard />
+            </div>
+        </BrowserRouter>
     );
 };
 

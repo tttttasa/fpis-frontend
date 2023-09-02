@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import axios from "axios";
 
-import "./UnosPlanaDogadjaja.scss";
+import "./IzmenaPlanaDogadjaja.scss";
 
 import Notification from "../../../notifications/Notification";
 
@@ -12,8 +12,12 @@ import {
     SpisakGostijuDto,
     StavkaPlanaDogadjajaDto,
 } from "../../../../utils/dtos";
+import { izmenaPlanaDogadjaja } from "../../../../utils/props";
 
-const UnosPlanaDogadjaja = () => {
+const IzmenaPlanaDogadjaja: FC<izmenaPlanaDogadjaja> = ({
+    planDogadjaja,
+    setIsChangeVisible,
+}) => {
     const [notification, setNotification] = useState<string>("");
 
     // Projektni menadžer
@@ -39,6 +43,25 @@ const UnosPlanaDogadjaja = () => {
 
     useEffect(() => {
         getAktivnosti();
+
+        setIdPM(
+            `${planDogadjaja.planDogadjaja.projektniMenadzer?.idProjektnogMenadzera}`
+        );
+        setImePrezPM(
+            `${planDogadjaja.planDogadjaja.projektniMenadzer?.imeProjektnogMenadzera} ${planDogadjaja.planDogadjaja.projektniMenadzer?.prezimeProjektnogMenadzera}`
+        );
+        setPM(planDogadjaja.planDogadjaja.projektniMenadzer!);
+
+        setIdSpisak(`${planDogadjaja.planDogadjaja.spisak?.idSpiska}`);
+        setBrojGostiju(`${planDogadjaja.planDogadjaja.spisak?.brojGostiju}`);
+        setSpisak(planDogadjaja.planDogadjaja.spisak!);
+
+        setStavke(
+            planDogadjaja.stavke!.sort(
+                (first, second) =>
+                    first.redniBrojStavke! - second.redniBrojStavke!
+            )
+        );
     }, []);
 
     const getAktivnosti = async () => {
@@ -164,18 +187,15 @@ const UnosPlanaDogadjaja = () => {
 
         const planDogadjajaData: PlanDogadjajaDataDto = {
             planDogadjaja: {
-                projektniMenadzer: {
-                    idProjektnogMenadzera: PM.idProjektnogMenadzera,
-                },
-                spisak: {
-                    idSpiska: spisak.idSpiska,
-                },
+                idPlanaDogadjaja: planDogadjaja.planDogadjaja.idPlanaDogadjaja,
+                projektniMenadzer: PM,
+                spisak: spisak,
             },
             stavke: stavke,
         };
 
         try {
-            await axios.post(
+            await axios.put(
                 `http://localhost:4500/plan-dogadjaja`,
                 planDogadjajaData
             );
@@ -184,50 +204,10 @@ const UnosPlanaDogadjaja = () => {
         } catch (e) {
             setNotification("Došlo je do greške pri čuvanju plana događaja!");
         }
-
-        resetForm();
-    };
-
-    const resetForm = () => {
-        setIdPM("");
-        setImePrezPM("");
-        setPM({});
-
-        setIdSpisak("");
-        setBrojGostiju("");
-        setSpisak({});
-
-        setIzabranaAktivnost(aktivnosti[0]);
-
-        setBrojSale("");
-        setNapomena("");
-
-        setStavke([]);
-    };
-
-    const handleSetAktivnosti = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        aktivnosti.forEach((aktivnost) => {
-            if (aktivnost.naziv === e.target.value) {
-                setIzabranaAktivnost(aktivnost);
-            }
-        });
-    };
-
-    const handleSetBrojSale = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const result = Number(e.target.value);
-
-        if (result === 0) {
-            setBrojSale("");
-            return;
-        }
-
-        if (!isNaN(result)) {
-            setBrojSale(result.toString());
-        }
     };
 
     return notification.length === 0 ? (
-        <div className="unos-plana-dogadjaja">
+        <div className="izmena-plana-dogadjaja">
             <div className="menadzer">
                 <div className="id">
                     <p>Šifra projektnog menadžera:</p>
@@ -295,7 +275,11 @@ const UnosPlanaDogadjaja = () => {
                         <select
                             id="aktivnost"
                             onChange={(e) => {
-                                handleSetAktivnosti(e);
+                                aktivnosti.forEach((aktivnost) => {
+                                    if (aktivnost.naziv === e.target.value) {
+                                        setIzabranaAktivnost(aktivnost);
+                                    }
+                                });
                             }}
                         >
                             {aktivnosti.map((aktivnost) => {
@@ -310,7 +294,16 @@ const UnosPlanaDogadjaja = () => {
                             id="broj"
                             value={brojSale}
                             onChange={(e) => {
-                                handleSetBrojSale(e);
+                                const result = Number(e.target.value);
+
+                                if (result === 0) {
+                                    setBrojSale("");
+                                    return;
+                                }
+
+                                if (!isNaN(result)) {
+                                    setBrojSale(result.toString());
+                                }
                             }}
                         />
                     </div>
@@ -371,12 +364,12 @@ const UnosPlanaDogadjaja = () => {
                             savePlan();
                         }}
                     >
-                        Potvrdi unos
+                        Potvrdi izmene
                     </div>
                     <div
                         className="btn"
                         onClick={() => {
-                            resetForm();
+                            setIsChangeVisible(false);
                         }}
                     >
                         Otkaži
@@ -389,4 +382,4 @@ const UnosPlanaDogadjaja = () => {
     );
 };
 
-export default UnosPlanaDogadjaja;
+export default IzmenaPlanaDogadjaja;
