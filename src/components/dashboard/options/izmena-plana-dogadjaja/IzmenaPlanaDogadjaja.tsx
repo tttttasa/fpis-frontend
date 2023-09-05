@@ -169,6 +169,16 @@ const IzmenaPlanaDogadjaja: FC<izmenaPlanaDogadjaja> = ({
         setStavke((stavke) => [...stavke, stavka]);
     };
 
+    const removeStavka = (index: number) => {
+        const newStavke = stavke.filter((_, i) => i !== index);
+
+        newStavke.forEach((stavka, index) => {
+            stavka.redniBrojStavke = index + 1;
+        });
+
+        setStavke(newStavke);
+    };
+
     const savePlan = async () => {
         if (imePrezPM.length === 0) {
             setNotification("Potrebno je postaviti PM-a!");
@@ -342,13 +352,22 @@ const IzmenaPlanaDogadjaja: FC<izmenaPlanaDogadjaja> = ({
                     <div className="table-wrapper">
                         <table>
                             <tbody>
-                                {stavke.map((stavka) => {
+                                {stavke.map((stavka, index) => {
                                     return (
                                         <tr>
-                                            <td>{stavka.redniBrojStavke}</td>
+                                            <td id="redni-broj">
+                                                <button
+                                                    onClick={() => {
+                                                        removeStavka(index);
+                                                    }}
+                                                >
+                                                    izbriši
+                                                </button>
+                                                {stavka.redniBrojStavke}
+                                            </td>
                                             <td>{stavka.aktivnost?.naziv}</td>
                                             <td>{stavka.brojSale}</td>
-                                            <td>{stavka.napomena}</td>
+                                            <td>{stavka.napomena} </td>
                                         </tr>
                                     );
                                 })}

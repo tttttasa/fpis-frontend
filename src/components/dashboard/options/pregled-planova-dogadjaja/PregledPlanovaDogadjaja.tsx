@@ -23,6 +23,8 @@ const PregledPlanovaDogadjaja = () => {
                     `http://localhost:4500/plan-dogadjaja`
                 );
 
+                console.log(response);
+
                 setVisibleData(response.data);
             } catch (e) {
                 setVisibleData([]);
