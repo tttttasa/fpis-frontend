@@ -30,6 +30,15 @@ const IzmenaPlanaDogadjaja: FC<izmenaPlanaDogadjaja> = ({
     const [brojGostiju, setBrojGostiju] = useState<string>("");
     const [spisak, setSpisak] = useState<SpisakGostijuDto>({});
 
+    // Datumi
+    const [pocetak, setPocetak] = useState<Date>();
+    const [zavrsetak, setZavrsetak] = useState<Date>();
+
+    // Stanja
+    const [stanje, setStanje] = useState<string>();
+    const [proveren, setProveren] = useState<boolean>();
+    const [validiran, setValidiran] = useState<boolean>();
+
     // Aktivnosti
     const [aktivnosti, setAktivnosti] = useState<AktivnostDto[]>([]);
     const [izabranaAktivnost, setIzabranaAktivnost] = useState<AktivnostDto>(
@@ -52,6 +61,9 @@ const IzmenaPlanaDogadjaja: FC<izmenaPlanaDogadjaja> = ({
         );
         setPM(planDogadjaja.planDogadjaja.projektniMenadzer!);
 
+        setPocetak(new Date(planDogadjaja.planDogadjaja.datumPocetka));
+        setZavrsetak(new Date(planDogadjaja.planDogadjaja.datumZavrsetka));
+
         setIdSpisak(`${planDogadjaja.planDogadjaja.spisak?.idSpiska}`);
         setBrojGostiju(`${planDogadjaja.planDogadjaja.spisak?.brojGostiju}`);
         setSpisak(planDogadjaja.planDogadjaja.spisak!);
@@ -62,6 +74,13 @@ const IzmenaPlanaDogadjaja: FC<izmenaPlanaDogadjaja> = ({
                     first.redniBrojStavke! - second.redniBrojStavke!
             )
         );
+
+        setStanje(planDogadjaja.planDogadjaja.stanje);
+        setProveren(
+            planDogadjaja.planDogadjaja.stanje === "proveren" ||
+                planDogadjaja.planDogadjaja.stanje === "validiran"
+        );
+        setValidiran(planDogadjaja.planDogadjaja.stanje === "validiran");
     }, []);
 
     const getAktivnosti = async () => {
@@ -195,11 +214,28 @@ const IzmenaPlanaDogadjaja: FC<izmenaPlanaDogadjaja> = ({
             return;
         }
 
+        if (!pocetak) {
+            setNotification("Postavite datum pocetka!");
+            return;
+        }
+
+        if (!zavrsetak) {
+            setNotification("Postavite datum zavrsetka!");
+            return;
+        }
+
         const planDogadjajaData: PlanDogadjajaDataDto = {
             planDogadjaja: {
                 idPlanaDogadjaja: planDogadjaja.planDogadjaja.idPlanaDogadjaja,
                 projektniMenadzer: PM,
                 spisak: spisak,
+                datumPocetka: pocetak,
+                datumZavrsetka: zavrsetak,
+                stanje: validiran
+                    ? "validiran"
+                    : proveren
+                    ? "proveren"
+                    : planDogadjaja.planDogadjaja.stanje,
             },
             stavke: stavke,
         };
@@ -214,6 +250,30 @@ const IzmenaPlanaDogadjaja: FC<izmenaPlanaDogadjaja> = ({
         } catch (e) {
             setNotification("Došlo je do greške pri čuvanju plana događaja!");
         }
+    };
+
+    const formatDate = (date: Date) => {
+        if (!date) {
+            return;
+        }
+
+        let day: string = "";
+
+        if (date.getDate() > 9) {
+            day = date.getDate().toString();
+        } else {
+            day = `0${date.getDate().toString()}`;
+        }
+
+        let month: string = "";
+
+        if ((date.getMonth() + 1) / 10 === 1) {
+            month = (date.getMonth() + 1).toString();
+        } else {
+            month = `0${(date.getMonth() + 1).toString()}`;
+        }
+
+        return `${date.getFullYear()}-${month}-${day}`;
     };
 
     return notification.length === 0 ? (
@@ -276,6 +336,52 @@ const IzmenaPlanaDogadjaja: FC<izmenaPlanaDogadjaja> = ({
                     }}
                 >
                     Pronađi spisak
+                </div>
+            </div>
+            <div className="datumi">
+                <div className="field">
+                    <p>Datum početka:</p>
+                    <input
+                        type="date"
+                        value={formatDate(pocetak!)}
+                        onChange={(e) => {
+                            setPocetak(new Date(e.target.value));
+                        }}
+                    />
+                </div>
+                <div className="field">
+                    <p>Datum završetka:</p>
+                    <input
+                        type="date"
+                        value={formatDate(zavrsetak!)}
+                        onChange={(e) => {
+                            setZavrsetak(new Date(e.target.value));
+                        }}
+                    />
+                </div>
+            </div>
+            <div className="stanja">
+                <div className="stanje">
+                    <input
+                        type="checkbox"
+                        disabled={stanje !== "popunjen"}
+                        checked={proveren}
+                        onClick={() => {
+                            setProveren(!proveren);
+                        }}
+                    />
+                    <p>Proveren</p>
+                </div>
+                <div className="stanje">
+                    <input
+                        type="checkbox"
+                        disabled={stanje !== "proveren"}
+                        checked={validiran}
+                        onClick={() => {
+                            setValidiran(!validiran);
+                        }}
+                    />
+                    <p>Validiran</p>
                 </div>
             </div>
             <div className="aktivnost">

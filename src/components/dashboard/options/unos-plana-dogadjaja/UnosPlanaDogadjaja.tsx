@@ -26,6 +26,10 @@ const UnosPlanaDogadjaja = () => {
     const [brojGostiju, setBrojGostiju] = useState<string>("");
     const [spisak, setSpisak] = useState<SpisakGostijuDto>({});
 
+    // Datumi
+    const [pocetak, setPocetak] = useState<Date>();
+    const [zavrsetak, setZavrsetak] = useState<Date>();
+
     // Aktivnosti
     const [aktivnosti, setAktivnosti] = useState<AktivnostDto[]>([]);
     const [izabranaAktivnost, setIzabranaAktivnost] = useState<AktivnostDto>(
@@ -162,6 +166,16 @@ const UnosPlanaDogadjaja = () => {
             return;
         }
 
+        if (!pocetak) {
+            setNotification("Molim vas postavite datum pocetka!");
+            return;
+        }
+
+        if (!zavrsetak) {
+            setNotification("Molim vas postavite datum zavrsetka!");
+            return;
+        }
+
         const planDogadjajaData: PlanDogadjajaDataDto = {
             planDogadjaja: {
                 projektniMenadzer: {
@@ -170,6 +184,8 @@ const UnosPlanaDogadjaja = () => {
                 spisak: {
                     idSpiska: spisak.idSpiska,
                 },
+                datumPocetka: pocetak,
+                datumZavrsetka: zavrsetak,
             },
             stavke: stavke,
         };
@@ -224,6 +240,30 @@ const UnosPlanaDogadjaja = () => {
         if (!isNaN(result)) {
             setBrojSale(result.toString());
         }
+    };
+
+    const formatDate = (date: Date) => {
+        if (!date) {
+            return;
+        }
+
+        let day: string = "";
+
+        if (date.getDate() > 9) {
+            day = date.getDate().toString();
+        } else {
+            day = `0${date.getDate().toString()}`;
+        }
+
+        let month: string = "";
+
+        if ((date.getMonth() + 1) / 10 === 1) {
+            month = (date.getMonth() + 1).toString();
+        } else {
+            month = `0${(date.getMonth() + 1).toString()}`;
+        }
+
+        return `${date.getFullYear()}-${month}-${day}`;
     };
 
     return notification.length === 0 ? (
@@ -286,6 +326,28 @@ const UnosPlanaDogadjaja = () => {
                     }}
                 >
                     Pronađi spisak
+                </div>
+            </div>
+            <div className="datumi">
+                <div className="field">
+                    <p>Datum početka:</p>
+                    <input
+                        type="date"
+                        value={formatDate(pocetak!)}
+                        onChange={(e) => {
+                            setPocetak(new Date(e.target.value));
+                        }}
+                    />
+                </div>
+                <div className="field">
+                    <p>Datum završetka:</p>
+                    <input
+                        type="date"
+                        value={formatDate(zavrsetak!)}
+                        onChange={(e) => {
+                            setZavrsetak(new Date(e.target.value));
+                        }}
+                    />
                 </div>
             </div>
             <div className="aktivnost">

@@ -49,6 +49,16 @@ const PregledFirmi = () => {
         return `${date.getFullYear()}-${month}-${date.getDate()}`;
     };
 
+    const deleteFirma = async (firmaData: FirmaDto) => {
+        await axios.delete(`http://localhost:4500/firma/${firmaData.idFirme}`);
+    };
+
+    const updateVisibleData = (index: number) => {
+        const data = [...visibleData];
+        data.splice(index, 1);
+        setVisibleData(data);
+    };
+
     return !isChangeVisible ? (
         <div className="pregled-firmi">
             <div className="upper">
@@ -85,6 +95,7 @@ const PregledFirmi = () => {
                             <th>Država</th>
                             <th>Grad</th>
                             <th></th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -109,6 +120,16 @@ const PregledFirmi = () => {
                                             }}
                                         >
                                             Izmeni
+                                        </button>
+                                    </td>
+                                    <td>
+                                        <button
+                                            onClick={() => {
+                                                deleteFirma(firmaData);
+                                                updateVisibleData(index);
+                                            }}
+                                        >
+                                            Izbriši
                                         </button>
                                     </td>
                                 </tr>

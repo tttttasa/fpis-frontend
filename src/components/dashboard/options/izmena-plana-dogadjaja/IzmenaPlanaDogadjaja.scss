@@ -1,13 +1,13 @@
 .izmena-plana-dogadjaja {
     position: relative;
 
-    margin-top: 370px;
+    margin-top: 500px;
     margin-bottom: 80px;
 
     font-family: "Roboto";
 
     width: 600px;
-    height: 730px;
+    height: 870px;
 
     display: flex;
     flex-direction: column;
@@ -123,6 +123,52 @@
         }
     }
 
+    .datumi {
+        display: flex;
+        align-items: center;
+        justify-content: space-evenly;
+
+        padding: 15px;
+
+        border: 1px solid black;
+        border-radius: 25px;
+
+        .field {
+            p {
+                margin-bottom: 8px;
+            }
+
+            input {
+                width: 200px;
+            }
+        }
+    }
+
+    .stanja {
+        display: flex;
+        align-items: center;
+        justify-content: space-evenly;
+
+        padding: 15px;
+
+        border: 1px solid black;
+        border-radius: 25px;
+
+        .stanje {
+            display: flex;
+            align-content: center;
+            justify-content: center;
+
+            p {
+            }
+
+            input {
+                &:hover {
+                    cursor: pointer;
+                }
+            }
+        }
+    }
     .aktivnost {
         display: flex;
         flex-direction: column;

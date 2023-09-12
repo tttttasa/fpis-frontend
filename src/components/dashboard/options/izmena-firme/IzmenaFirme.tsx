@@ -144,6 +144,7 @@ const IzmenaFirme: FC<izmenaFirmeProps> = ({ firma, setIsChangeVisible }) => {
                             <p>Matični broj:</p>
                             <input
                                 type="text"
+                                disabled={true}
                                 value={maticni}
                                 onChange={(e) => {
                                     setMaticni(e.target.value);

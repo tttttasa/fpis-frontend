@@ -2,10 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 
 import "./PregledPlanovaDogadjaja.scss";
-import {
-    PlanDogadjajaDataDto,
-    StavkaPlanaDogadjajaDto,
-} from "../../../../utils/dtos";
+import { PlanDogadjajaDataDto } from "../../../../utils/dtos";
 import IzmenaPlanaDogadjaja from "../izmena-plana-dogadjaja/IzmenaPlanaDogadjaja";
 
 const PregledPlanovaDogadjaja = () => {
@@ -22,8 +19,6 @@ const PregledPlanovaDogadjaja = () => {
                 const response = await axios.get(
                     `http://localhost:4500/plan-dogadjaja`
                 );
-
-                console.log(response);
 
                 setVisibleData(response.data);
             } catch (e) {
@@ -46,16 +41,14 @@ const PregledPlanovaDogadjaja = () => {
         }
     };
 
-    const findEarliestDate = (stavke: StavkaPlanaDogadjajaDto[]): string => {
-        let earliest = stavke[0].aktivnost?.termin;
+    const deletePlan = async (planId: number) => {
+        await axios.delete(`http://localhost:4500/plan-dogadjaja/${planId}`);
+    };
 
-        stavke.forEach((stavka) => {
-            if (stavka.aktivnost?.termin! < earliest!) {
-                earliest = stavka.aktivnost?.termin;
-            }
-        });
-
-        return formatDate(earliest!);
+    const updateVisibleData = (index: number) => {
+        const data = [...visibleData];
+        data.splice(index, 1);
+        setVisibleData(data);
     };
 
     const formatDate = (date: Date) => {
@@ -105,8 +98,11 @@ const PregledPlanovaDogadjaja = () => {
                                 ID Plana događaja
                             </th>
                             <th style={{ width: "150px" }}>Datum početka</th>
+                            <th style={{ width: "150px" }}>Datum zarvšetka</th>
                             <th style={{ width: "200px" }}>Ime PM-a</th>
                             <th style={{ width: "120px" }}>Broj gostiju</th>
+                            <th></th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -117,9 +113,14 @@ const PregledPlanovaDogadjaja = () => {
                                         {plan.planDogadjaja.idPlanaDogadjaja}
                                     </td>
                                     <td>
-                                        {findEarliestDate(
-                                            plan.stavke
-                                        )?.toString()}
+                                        {formatDate(
+                                            plan.planDogadjaja.datumPocetka
+                                        )}
+                                    </td>
+                                    <td>
+                                        {formatDate(
+                                            plan.planDogadjaja.datumZavrsetka
+                                        )}
                                     </td>
                                     <td>
                                         {
@@ -130,16 +131,57 @@ const PregledPlanovaDogadjaja = () => {
                                     <td>
                                         {plan.planDogadjaja.spisak?.brojGostiju}
                                     </td>
-                                    <button
-                                        onClick={() => {
-                                            setChangePlanDogadjaja(
-                                                visibleData[index]
-                                            );
-                                            setIsChangeVisible(true);
-                                        }}
-                                    >
-                                        Izmeni
-                                    </button>
+                                    <td>
+                                        <button
+                                            onClick={() => {
+                                                setChangePlanDogadjaja(
+                                                    visibleData[index]
+                                                );
+                                                setIsChangeVisible(true);
+                                            }}
+                                            style={
+                                                plan.planDogadjaja.stanje ===
+                                                "validiran"
+                                                    ? {
+                                                          cursor: "default",
+                                                          opacity: "1",
+                                                      }
+                                                    : {}
+                                            }
+                                            disabled={
+                                                plan.planDogadjaja.stanje ===
+                                                "validiran"
+                                            }
+                                        >
+                                            Izmeni
+                                        </button>
+                                    </td>
+                                    <td>
+                                        <button
+                                            onClick={() => {
+                                                deletePlan(
+                                                    plan.planDogadjaja
+                                                        .idPlanaDogadjaja!
+                                                );
+                                                updateVisibleData(index);
+                                            }}
+                                            style={
+                                                plan.planDogadjaja.stanje ===
+                                                "validiran"
+                                                    ? {
+                                                          cursor: "default",
+                                                          opacity: "1",
+                                                      }
+                                                    : {}
+                                            }
+                                            disabled={
+                                                plan.planDogadjaja.stanje ===
+                                                "validiran"
+                                            }
+                                        >
+                                            Izbriši
+                                        </button>
+                                    </td>
                                 </tr>
                             );
                         })}
