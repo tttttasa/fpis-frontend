@@ -13,6 +13,11 @@ const PregledPlanovaDogadjaja = () => {
     const [changePlanDogadjaja, setChangePlanDogadjaja] =
         useState<PlanDogadjajaDataDto>();
 
+    // Stanja
+    const [popunjen, setPopunjen] = useState<boolean>(false);
+    const [proveren, setProveren] = useState<boolean>(false);
+    const [validiran, setValidiran] = useState<boolean>(false);
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -30,14 +35,58 @@ const PregledPlanovaDogadjaja = () => {
     }, [isChangeVisible]);
 
     const findMatches = async () => {
-        try {
-            const response = await axios.get(
-                `http://localhost:4500/plan-dogadjaja/${imePM}`
-            );
+        if (imePM.length === 0 && !popunjen && !proveren && !validiran) {
+            try {
+                const response = await axios.get(
+                    `http://localhost:4500/plan-dogadjaja`
+                );
 
-            setVisibleData(response.data);
-        } catch (e) {
-            setVisibleData([]);
+                setVisibleData(response.data);
+            } catch (e) {
+                setVisibleData([]);
+            }
+        } else if (!popunjen && !proveren && !validiran) {
+            try {
+                const response = await axios.get(
+                    `http://localhost:4500/plan-dogadjaja/${imePM}`
+                );
+
+                setVisibleData(
+                    (response.data as PlanDogadjajaDataDto[]).sort(
+                        (a, b) =>
+                            a.planDogadjaja.idPlanaDogadjaja! -
+                            b.planDogadjaja.idPlanaDogadjaja!
+                    )
+                );
+            } catch (e) {
+                setVisibleData([]);
+            }
+        } else if (imePM.length === 0) {
+            try {
+                const response = await axios.get(
+                    `http://localhost:4500/plan-dogadjaja/${popunjen}/${proveren}/${validiran}`
+                );
+
+                setVisibleData(
+                    (response.data as PlanDogadjajaDataDto[]).sort(
+                        (a, b) =>
+                            a.planDogadjaja.idPlanaDogadjaja! -
+                            b.planDogadjaja.idPlanaDogadjaja!
+                    )
+                );
+            } catch (e) {
+                setVisibleData([]);
+            }
+        } else {
+            try {
+                const response = await axios.get(
+                    `http://localhost:4500/plan-dogadjaja/${imePM}/${popunjen}/${proveren}/${validiran}`
+                );
+
+                setVisibleData(response.data);
+            } catch (e) {
+                setVisibleData([]);
+            }
         }
     };
 
@@ -68,25 +117,59 @@ const PregledPlanovaDogadjaja = () => {
     return !isChangeVisible ? (
         <div className="pregled-planova-dogadjaja">
             <div className="upper">
-                <div className="left">
-                    <p>Uneti kriterijume pretrage:</p>
-                    <input
-                        type="text"
-                        placeholder="Ime i prezime zaduženog PM-a"
-                        value={imePM}
-                        onChange={(e) => {
-                            setImePM(e.target.value);
-                        }}
-                    />
+                <div className="query">
+                    <div className="left">
+                        <p>Uneti kriterijume pretrage:</p>
+                        <input
+                            type="text"
+                            placeholder="Ime i prezime zaduženog PM-a"
+                            value={imePM}
+                            onChange={(e) => {
+                                setImePM(e.target.value);
+                            }}
+                        />
+                    </div>
+                    <div className="right">
+                        <div
+                            className="btn"
+                            onClick={() => {
+                                findMatches();
+                            }}
+                        >
+                            Pretraži
+                        </div>
+                    </div>
                 </div>
-                <div className="right">
-                    <div
-                        className="btn"
-                        onClick={() => {
-                            findMatches();
-                        }}
-                    >
-                        Pretraži
+                <div className="stanja">
+                    <div className="stanje">
+                        <p>Popunjen</p>
+                        <input
+                            type="checkbox"
+                            checked={popunjen}
+                            onClick={() => {
+                                setPopunjen(!popunjen);
+                            }}
+                        />
+                    </div>
+                    <div className="stanje">
+                        <p>Proveren</p>
+                        <input
+                            type="checkbox"
+                            checked={proveren}
+                            onClick={() => {
+                                setProveren(!proveren);
+                            }}
+                        />
+                    </div>
+                    <div className="stanje">
+                        <p>Validiran</p>
+                        <input
+                            type="checkbox"
+                            checked={validiran}
+                            onClick={() => {
+                                setValidiran(!validiran);
+                            }}
+                        />
                     </div>
                 </div>
             </div>

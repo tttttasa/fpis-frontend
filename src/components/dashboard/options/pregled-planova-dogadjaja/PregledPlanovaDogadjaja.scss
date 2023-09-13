@@ -2,37 +2,67 @@
     width: 100vw;
 
     .upper {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
+        .query {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
 
-        width: 400px;
+            width: 400px;
 
-        margin: 0px auto 20px auto;
+            margin: 0px auto 20px auto;
 
-        font-family: "Roboto";
-        .left {
-            input {
-                width: 200px;
+            font-family: "Roboto";
 
-                margin-top: 10px;
+            .left {
+                input {
+                    width: 200px;
 
-                font-family: "Roboto";
+                    margin-top: 10px;
+
+                    font-family: "Roboto";
+                }
+            }
+
+            .right {
+                .btn {
+                    padding: 5px 15px;
+
+                    border: solid 2px black;
+                    border-radius: 20px;
+
+                    font-family: "Roboto";
+
+                    &:hover {
+                        cursor: pointer;
+                        opacity: 0.6;
+                    }
+                }
             }
         }
 
-        .right {
-            .btn {
-                padding: 5px 15px;
+        .stanja {
+            display: flex;
+            align-items: center;
+            justify-content: space-evenly;
 
-                border: solid 2px black;
-                border-radius: 20px;
+            width: 400px;
 
-                font-family: "Roboto";
+            margin: 0px auto 20px auto;
+            .stanje {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
 
-                &:hover {
-                    cursor: pointer;
-                    opacity: 0.6;
+                p {
+                    font-family: "Roboto";
+                    margin-bottom: 10px;
+                }
+
+                input {
+                    &:hover {
+                        cursor: pointer;
+                    }
                 }
             }
         }
