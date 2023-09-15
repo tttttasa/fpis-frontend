@@ -50,6 +50,9 @@ const IzmenaPlanaDogadjaja: FC<izmenaPlanaDogadjaja> = ({
     // Stavke
     const [stavke, setStavke] = useState<StavkaPlanaDogadjajaDto[]>([]);
 
+    // Stavka za izmenu
+    const [stavka, setStavka] = useState<StavkaPlanaDogadjajaDto>();
+
     useEffect(() => {
         getAktivnosti();
 
@@ -276,6 +279,60 @@ const IzmenaPlanaDogadjaja: FC<izmenaPlanaDogadjaja> = ({
         return `${date.getFullYear()}-${month}-${day}`;
     };
 
+    const setStavkaZaIzmenu = (stavka: StavkaPlanaDogadjajaDto) => {
+        setStavka(stavka);
+        setNapomena(stavka.napomena!);
+        setBrojSale(stavka.brojSale!.toString());
+        setIzabranaAktivnost(stavka.aktivnost!);
+    };
+
+    const unsetUnosStavke = () => {
+        setStavka(undefined);
+        setBrojSale("");
+        setNapomena("");
+    };
+
+    const updateStavka = () => {
+        if (
+            !izabranaAktivnost ||
+            brojSale.length === 0 ||
+            napomena.length === 0
+        ) {
+            setNotification("Molim Vas popunite sva polja stavke!");
+            return;
+        }
+
+        const updatedStavka: StavkaPlanaDogadjajaDto = {
+            redniBrojStavke: stavka!.redniBrojStavke,
+            aktivnost: izabranaAktivnost,
+            brojSale: Number(brojSale),
+            napomena: napomena,
+        };
+
+        let stavkeArray = stavke;
+        let stavkaIndex: undefined | number = 0;
+
+        stavkeArray.forEach((element, index) => {
+            if (element.redniBrojStavke === updatedStavka.redniBrojStavke) {
+                stavkaIndex = index;
+            }
+        });
+
+        if (stavkaIndex === undefined) {
+            setNotification("Doslo je do greške pri ažuriranju stavke!");
+            unsetUnosStavke();
+            return;
+        }
+
+        stavkeArray[stavkaIndex] = updatedStavka;
+        setStavke(stavkeArray);
+
+        console.log(updatedStavka);
+        console.log(stavkeArray);
+
+        unsetUnosStavke();
+    };
+
     return notification.length === 0 ? (
         <div className="izmena-plana-dogadjaja">
             <div className="menadzer">
@@ -433,13 +490,49 @@ const IzmenaPlanaDogadjaja: FC<izmenaPlanaDogadjaja> = ({
                         setNapomena(e.target.value);
                     }}
                 ></textarea>
-                <div
-                    className="btn"
-                    onClick={() => {
-                        addStavka();
-                    }}
-                >
-                    Ubaci stavku
+                <div className="btns">
+                    <button
+                        className="btn"
+                        onClick={() => {
+                            addStavka();
+                        }}
+                        disabled={stavka !== undefined}
+                        style={
+                            stavka !== undefined
+                                ? { cursor: "default", opacity: "1" }
+                                : {}
+                        }
+                    >
+                        Ubaci stavku
+                    </button>
+                    <button
+                        className="btn"
+                        disabled={stavka === undefined}
+                        style={
+                            stavka === undefined
+                                ? { cursor: "default", opacity: "1" }
+                                : {}
+                        }
+                        onClick={() => {
+                            updateStavka();
+                        }}
+                    >
+                        Izmeni stavku
+                    </button>
+                    <button
+                        className="btn"
+                        disabled={brojSale.length === 0}
+                        style={
+                            brojSale.length === 0
+                                ? { cursor: "default", opacity: "1" }
+                                : {}
+                        }
+                        onClick={() => {
+                            unsetUnosStavke();
+                        }}
+                    >
+                        Otkaži
+                    </button>
                 </div>
             </div>
             <div className="stavke">
@@ -448,7 +541,11 @@ const IzmenaPlanaDogadjaja: FC<izmenaPlanaDogadjaja> = ({
                     <table id="header">
                         <thead>
                             <tr>
-                                <th>RB Stavke</th>
+                                <th style={{ border: "none" }}></th>
+                                <th style={{ border: "none" }}></th>
+                                <th style={{ borderLeft: "solid 1px black" }}>
+                                    RB Stavke
+                                </th>
                                 <th>Naziv aktivnosti</th>
                                 <th>Broj sale</th>
                                 <th>Napomena</th>
@@ -461,7 +558,7 @@ const IzmenaPlanaDogadjaja: FC<izmenaPlanaDogadjaja> = ({
                                 {stavke.map((stavka, index) => {
                                     return (
                                         <tr>
-                                            <td id="redni-broj">
+                                            <td>
                                                 <button
                                                     onClick={() => {
                                                         removeStavka(index);
@@ -469,6 +566,19 @@ const IzmenaPlanaDogadjaja: FC<izmenaPlanaDogadjaja> = ({
                                                 >
                                                     izbriši
                                                 </button>
+                                            </td>
+                                            <td>
+                                                <button
+                                                    onClick={() => {
+                                                        setStavkaZaIzmenu(
+                                                            stavka
+                                                        );
+                                                    }}
+                                                >
+                                                    izaberi
+                                                </button>
+                                            </td>
+                                            <td id="redni-broj">
                                                 {stavka.redniBrojStavke}
                                             </td>
                                             <td>{stavka.aktivnost?.naziv}</td>

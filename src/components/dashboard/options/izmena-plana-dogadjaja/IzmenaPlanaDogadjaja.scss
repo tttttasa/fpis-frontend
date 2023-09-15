@@ -220,19 +220,29 @@
             margin-bottom: 20px;
         }
 
-        .btn {
-            width: 95px;
+        .btns {
+            width: 400px;
 
-            padding: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
 
-            background-color: rgb(194, 194, 194);
+            .btn {
+                text-align: center;
 
-            border: 1px solid rgb(70, 70, 70);
-            border-radius: 25px;
+                width: 110px;
 
-            &:hover {
-                cursor: pointer;
-                opacity: 0.6;
+                padding: 10px;
+
+                background-color: rgb(194, 194, 194);
+
+                border: 1px solid rgb(70, 70, 70);
+                border-radius: 25px;
+
+                &:hover {
+                    cursor: pointer;
+                    opacity: 0.6;
+                }
             }
         }
     }
